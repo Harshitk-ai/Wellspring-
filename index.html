@@ -403,7 +403,15 @@ function v(id) {
   if (!el) return '';
   return el.type === 'checkbox' ? el.checked : (el.value || '');
 }
-function n(id, fallback = 0) { return parseFloat(v(id)) || fallback; }
+
+// ✅ FIXED: properly handles 0 values — no longer falls back to default when 0 is entered
+function n(id, fallback = 0) {
+  const val = v(id);
+  if (val === '' || val === null || val === undefined) return fallback;
+  const parsed = parseFloat(val);
+  return isNaN(parsed) ? fallback : parsed;
+}
+
 function pct(a, b) { return b ? ((a / b) * 100).toFixed(1) : '0.0'; }
 function fmt(num) { return '$' + num.toFixed(2); }
 function fmtN(num) { return num.toLocaleString(); }
